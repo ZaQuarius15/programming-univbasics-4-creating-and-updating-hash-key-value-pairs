@@ -2,33 +2,17 @@
 
 ## Learning Goals
 
-- Update data to a hash using the "bracket" method and value assignment
-- Add data to a hash using the "bracket" method and value assignment
+- Update data to a `Hash` using the "bracket" method and value assignment
+- Add data to a `Hash` using the "bracket" method and value assignment
 
 ## Introduction
 
-While we're not able to read hash values using keys, currently, when we create
-a hash, we're stuck with whatever data was entered in when the hash was created:
-
-```ruby
-person = {
-  name: "Sam",
-  age: 31
-}
-#=> {:name=>"Sam", :age=>31}
-
-person[:age]
-#=> 31
-```
-
 In this lesson, we're going to look at modifying and adding data to existing
-hashes. This way, we can create a hash then update it as we need, letting us
-maintain associations between pieces of data, even if the pieces themselves are
-altered.
+`Hash`es. This way, we can create a `Hash` then update it as we need.
 
 ## Updating Hash Values
 
-Updating hash values is very similar to looking them up. For updating, we use
+Updating `Hash` values is very similar to looking them up. For updating, we use
 the **bracket-equals** method:
 
 ```ruby
@@ -43,9 +27,12 @@ person[:age]
 
 person[:age] = 32
 #=> 32
+
+person[:age]
+#=> 32
 ```
 
-If we look back at the entire hash, we see that the value associated with the
+If we look back at the entire `Hash`, we see that the value associated with the
 `:age` key has changed:
 
 ```ruby
@@ -53,8 +40,8 @@ person
 #=> {:name=>"Sam", :age=>32}
 ```
 
-Using the bracket-equals method, we can mutate any value stored inside a hash.
-All we need to know is the associated key.
+Using the bracket-equals method, we can change any value stored inside a `Hash`.
+All we need to know is the "cordinate:" the associated key.
 
 ## Adding Keys and Values to a Hash
 
@@ -67,8 +54,8 @@ person[:hometown]
 ```
 
 So, what happens when we use an invalid key with the bracket-equals method? When
-Ruby discovers that the key is not present on the hash in question, Ruby will
-simply _create_ a key/value pair on the hash:
+Ruby discovers that the key is not present on the `Hash` in question, Ruby will
+simply _create_ a key/value pair on the `Hash`:
 
 ```ruby
 person = {
@@ -88,22 +75,22 @@ person[:hometown] = "Brooklyn, NY"
 person[:hometown]
 #=> "Brooklyn, NY"
 
-# Our original hash is also mutated
+# Our original hash is also changed
 person
 #=> {:name=>"Sam", :age=>31, :hometown=>"Brooklyn, NY"}
 ```
 
-The general syntax for adding a new value to a hash is:
+The general syntax for adding a new value to a `Hash` is:
 `hash[:new_key] = "New Value"`. `:new_key` is the literal new key we added to
-the hash and we assigned the `:new_key` a value of `"New Value"`.
+the `Hash` and we assigned the `:new_key` a value of `"New Value"`.
 
-## Finding or Creating a Hash Value
+## Update or Creating a Hash Value
 
-We saw in the last lesson that the bracket method can be used in conditional
-statements. One common use case of this is having to either find a value in a
-or _create_ that value. Let's consider what is involved.
+We just noted that if you attempt to access a key in a `Hash` that doesn't
+exist, the operation returns `nil`. Remember that `nil` is falsey in
+conditions. This means we can write "update or create" logic.
 
-First, let's take an example hash:
+First, let's take an example `Hash`:
 
 ```ruby
 shipping_manifest = {
@@ -115,71 +102,36 @@ shipping_manifest = {
 }
 ```
 
-Imagine the above hash is a manifest for products being shipped, with their
-values representing quantity, and our job is to keep a tally as more products
-are counted. A fourth oil painting shows up and we need to add it to the list.
-Easy enough. The hash is small enough that we could just write the following and
-be done:
-
-```ruby
-shipping_manifest["oil painting"] = 4
-```
-
-Three paintings previously accounted for, plus one new painting. However, we can
-be a bit more abstract than that. Is there a way we can quickly increment an
-integer without having to explicitly know the previous value? Well, we could do
-this:
-
-```ruby
-shipping_manifest["oil painting"] = shipping_manifest["oil painting"] + 1
-```
-
-Now `shipping_manifest["oil painting"]` will be assigned to whatever it was
-previously, _plus one_. If you recall from the looping lessons in Programming as
-Conversation, there is an even shorter way to express this:
+Imagine the above `Hash` is a manifest for products being shipped, with their
+values representing quantity on the ship, and our job is to keep a tally as
+more products are counted. A fourth "oil painting" shows up and we need to add
+it to the list.  Easy enough. We'll use Ruby's "increment" expression.
 
 ```ruby
 shipping_manifest["oil painting"] += 1
 ```
 
-Great! But wait.. what happens when a _new_ item is introduced. Say we need to
-ship one top hat, which isn't present in the shipping_manifest yet.
+Great! But what happens when a _new_ item is introduced? Say we need to ship
+one `"top hat"`, which isn't present in the `shipping_manifest` yet.
 
 ```ruby
 shipping_manifest["top hat"] += 1
 ```
 
-If you plug the `shipping_manifest` hash into IRB and try the code snippet above,
+If you plug the `shipping_manifest` `Hash` into IRB and try the code snippet above,
 you'll receive an error:
 
 ```text
 NoMethodError (undefined method `+' for nil:NilClass)
 ```
 
-What is happening here is that Ruby can't find `shipping_manifest["top hat"]`.
-Because of this, it returns `nil`. As we know, Ruby doesn't like to combine data
-types when it comes to operators. We are effectively writing `nil = nil + 1`,
-which doesn't make any sense.
+Since Ruby can't find `shipping_manifest["top hat"]`.  Because of this, it
+returns `nil`. As we know, Ruby doesn't like to combine data types when it
+comes to operators. We are effectively writing `nil = nil + 1`, which doesn't
+make any sense.
 
 We can prevent this error from occurring by setting up a conditional and using
 the bracket method to first look up a key before trying to change it:
-
-```ruby
-if shipping_manifest["top hat"]
-  shipping_manifest["top hat"] += 1
-else
-  puts "Key not found!"
-end
-```
-
-Since `"top hat"` isn't a key in `shipping_manifest`, the above conditional
-will `puts` "Key not found!" to the terminal rather than cause an error.
-
-This still doesn't fully solve the problem. Sure, we can't update something that
-isn't there, but we still want to add a top hat to our shipping manifest.
-
-Instead of just outputting a message to the terminal, we can handle adding
-a key/value pair here.
 
 ```ruby
 if shipping_manifest["top hat"]
@@ -193,11 +145,35 @@ Okay, so reading this in order - if `shipping_manifest["top hat"]` is truthy,
 increment `shipping_manifest["top hat"]` by one. Else, assign
 `shipping_manifest["top hat"]` to be equal to `1`.
 
-Running the above conditional once again, the `"top hat"` key will
-be added and set to `1`. Running it again will update `"top hat"` to `2`!
+Running the above conditional once again, the `"top hat"` key will be added and
+set to `1`. Running it again will update `"top hat"` to `2`!
+
+A fully professional grade implementation would probably find this logic
+wrapped in a method, like so:
+
+```ruby
+def tally_item(manifest, item_name)
+  if manifest[item_name]
+    manifest[item_name] += 1
+  else
+    manifest[item_name] = 0 
+  end
+end
+
+manifest = {}
+tally_item(manifest, "banana")
+tally_item(manifest, "highly-deadly black tarantula")
+tally_item(manifest, "Mr. Tally-Man")
+tally_item(manifest, "Naruto anime")
+tally_item(manifest, "Darth Vader Candy")
+
+manifest
+#=> {"banana"=>2, "highly-deadly black tarantula"=>1, "Mr. Tally-Man"=>1, "Naruto anime"=>1, "Darth Vader Candy"=>2, "Leia Organa tattoo kit"=>1, "Big 6-foot, 7-foot, 8-foot bunch!"=>1}
+
+```
 
 ## Conclusion
 
 With the ability to update values and create entirely new key/value pairs, we've
-tackled the core concepts behind Ruby hashes. In the next few lessons, we will
+tackled the core concepts behind Ruby `Hash`es. In the next few lessons, we will
 reinforce these concepts with some lab practice.
